@@ -298,11 +298,11 @@ const S = [
   {t:"Dale, Down, Fell and Beck", d:"Walk north and the water changes its name. The words Britain uses for hills, valleys and streams, mapped.", r:"dale-down-fell-beck", img:"dale-down-fell-beck/header.png", blog:"https://blog.tristanhotham.com/2026/10/26/dale-down-fell-beck/"},
   {t:"Is Domesday Destiny?", d:"Does a place's size in 1086 still predict its size today? 13,000 Domesday places on one map.", r:"domesday-destiny", img:"domesday-destiny/header.png", blog:"https://blog.tristanhotham.com/2026/10/26/is-domesday-destiny/"},
   {t:"The Famous Few", d:"4,147 hillforts, ten years of Wikipedia reading. Eleven sites take half of it, mostly for their castles.", r:"famous-few", img:"famous-few/header.png", blog:"https://blog.tristanhotham.com/2026/10/25/the-famous-few/", paper:"https://doi.org/10.5281/zenodo.23649936"},
-  {t:"How Roman Is Your Road?", d:"How much of each county's A-road network still follows a Roman line, with a lidar layer.", r:"how-roman-is-your-road", img:"how-roman-is-your-road/header.png", blog:"https://blog.tristanhotham.com/2026/10/26/how-roman-is-your-road/", paper:"https://doi.org/10.5281/zenodo.23673516"},
+  {t:"How Roman Is Your Road?", d:"How much of each county's A-road network still follows a Roman line, with a lidar layer.", r:"how-roman-is-your-road", img:"how-roman-is-your-road/header.png", blog:"https://blog.tristanhotham.com/2026/10/26/how-roman-is-your-road/", data:"https://doi.org/10.5281/zenodo.23673516"},
   {t:"The High Ones", d:"The Brigantes, Brigantium and the Celtic word for high, traced across Europe.", r:"the-high-ones", img:"the-high-ones/high_ones_header.png", blog:"https://blog.tristanhotham.com/2026/10/25/the-high-ones/"},
   {t:"Rings in the Rock", d:"Cup-and-ring carvings on Europe's Atlantic edge: where they are, when, and what they might mean.", r:"rings-in-the-rock", img:"rings-in-the-rock/rings_header.png", blog:"https://blog.tristanhotham.com/2026/10/25/rings-in-the-rock/"},
   {t:"The Triskell Boom", d:"How an ancient triple spiral became a modern Celtic badge, 3500 BC to today.", r:"triskell-boom", img:"https://tristanahotham.wordpress.com/wp-content/uploads/2026/10/triskell_header.png", blog:"https://blog.tristanhotham.com/2026/10/24/the-triskell-boom/"},
-  {t:"Did Detectorists Start a Boom?", d:"UK searches and Portable Antiquities Scheme finds, 2004 to 2026: did a sitcom send people out with metal detectors?", r:"detectorists-effect", img:"detectorists-effect/header.png", blog:"https://blog.tristanhotham.com/2026/10/26/did-detectorists-start-a-boom/", paper:"https://doi.org/10.5281/zenodo.23666468"}
+  {t:"Did Detectorists Start a Boom?", d:"UK searches and Portable Antiquities Scheme finds, 2004 to 2026: did a sitcom send people out with metal detectors?", r:"detectorists-effect", img:"detectorists-effect/header.png", blog:"https://blog.tristanhotham.com/2026/10/26/did-detectorists-start-a-boom/", data:"https://doi.org/10.5281/zenodo.23666468"}
 ];
 const G = [
   {t:"Bit-zkrieg: Iron Front '44", d:"A WW2 turn-based tactics game in the Advance Wars mould: 66 battles in eleven campaigns, zombie waves and a map builder.", r:"iron-front-44", img:"iron-front-44/poster.jpg", blog:"https://blog.tristanhotham.com/2026/10/17/iron-front-44/"},
@@ -318,6 +318,7 @@ function card(p, type, cls) {
   const links = [`<a href="${href}">${type === "Game" ? "Play" : "Explore"}</a>`];
   if (p.blog) links.push(`<a href="${p.blog}">Blog post</a>`);
   if (p.paper) links.push(`<a href="${p.paper}">Paper</a>`);
+  if (p.data) links.push(`<a href="${p.data}">Data</a>`);
   links.push(`<a href="https://github.com/Tristan-Hotham/${p.r}">Code</a>`);
   return `<article class="card">${art}${cls ? `<span class="type ${cls}">${type}</span>` : ""}<div class="body"><h3><a href="${href}">${esc(p.t)}</a></h3><p>${esc(p.d)}</p><div class="links">${links.join("")}</div></div></article>`;
 }
