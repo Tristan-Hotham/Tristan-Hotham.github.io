@@ -188,7 +188,7 @@ footer .fine{grid-column:1/-1;font:400 12px/1.5 var(--mono);color:color-mix(in s
         <div class="kick"><b>Independent researcher</b><span>Data · maps · papers · games</span></div>
         <h1><span>Tristan</span><span class="r">Hotham</span></h1>
         <p class="tag">Researcher of campaigns and platforms. Maker of other things.</p>
-        <p class="lede">I take public data, the messier the better, and turn it into papers, interactive maps and things you can play with. My PhD and most of my papers are about how political parties use Facebook. Lately I have pointed the same methods at hillforts, Roman roads, pub signs, church saints, the Domesday Book and the words Britain uses for its streams.</p>
+        <p class="lede">I take public data, the messier the better, and turn it into papers, interactive maps and things you can play with. My PhD and most of my papers are about how political parties use Facebook. Lately I have pointed the same methods at hillforts, Roman roads, pub signs, saints, shipwrecks, witch trials and the Domesday Book.</p>
         <div class="cta">
           <a class="p" href="#studies">See the data studies</a>
           <a href="#research">The research</a>
@@ -203,7 +203,7 @@ footer .fine{grid-column:1/-1;font:400 12px/1.5 var(--mono);color:color-mix(in s
     </div>
     <div class="stats">
       <div><b>PhD</b><span>Political parties on Facebook</span></div>
-      <div><b class="r" id="n-studies">14</b><span>Interactive data studies</span></div>
+      <div><b class="r" id="n-studies">40</b><span>Interactive data studies</span></div>
       <div><b class="bl">3</b><span>Free browser games</span></div>
       <div><b>Open</b><span>Every paper, dataset and line of code</span></div>
     </div>
@@ -293,6 +293,32 @@ footer .fine{grid-column:1/-1;font:400 12px/1.5 var(--mono);color:color-mix(in s
 
 <script>
 const S = [
+  {t:"Rotten Boroughs: Where Are They Now?", d:"The 56 boroughs the 1832 Reform Act abolished, followed to today: 25 are villages, a hamlet or an empty hill.", r:"rotten-boroughs", img:"rotten-boroughs/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/rotten-boroughs/", data:"https://doi.org/10.5281/zenodo.23691900"},
+  {t:"Minted", d:"England's Anglo-Saxon and Norman mint towns from 70,995 coins: were they still the big towns in 1377, 1801 and today?", r:"saxon-mints", img:"saxon-mints/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/saxon-mints/"},
+  {t:"Canal Mania", d:"Did England's canal towns boom, and do they still lead? Bigger today, not richer.", r:"canal-mania", img:"canal-mania/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/canal-mania/", data:"https://doi.org/10.5281/zenodo.23689966"},
+  {t:"Here Be Dragons", d:"Britain's dragon legends and place names: they cling to the parish church, not the barrow or the river.", r:"here-be-dragons", img:"here-be-dragons/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/here-be-dragons/", data:"https://doi.org/10.5281/zenodo.23689964"},
+  {t:"Cholera 1849", d:"Farr's elevation law, Snow's pump and whether London's worst-hit districts are still the poorest.", r:"cholera-1849", img:"cholera-1849/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/cholera-1849/", data:"https://doi.org/10.5281/zenodo.23689968"},
+  {t:"The Roman Commuter Belt?", d:"617 Roman villas against today's household income: a premium that is almost all geography.", r:"roman-villas", img:"roman-villas/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/roman-villas/", data:"https://doi.org/10.5281/zenodo.23689960"},
+  {t:"Laid Waste: the Harrying of the North", d:"Where Domesday's 'waste' fell after 1069 to 1070, and how faint its scar is today.", r:"harrying-of-the-north", img:"harrying-of-the-north/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/harrying-of-the-north/", data:"https://doi.org/10.5281/zenodo.23689581"},
+  {t:"Fire on the Hills", d:"Could the Armada beacons carry the news? 193 beacon hills and the lines of sight between them.", r:"armada-beacons", img:"armada-beacons/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/armada-beacons/", data:"https://doi.org/10.5281/zenodo.23688581"},
+  {t:"Ford or Bridge?", d:"Every ford and bridge place name in Britain against the census and income: Oxford waded, Cambridge built.", r:"fords-and-bridges", img:"fords-and-bridges/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/fords-and-bridges/", data:"https://doi.org/10.5281/zenodo.23688579"},
+  {t:"Gallows Hill", d:"Where Britain put its gallows: 340 names measured for height, roads, towns and boundaries.", r:"gallows-hill", img:"gallows-hill/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/gallows-hill/", data:"https://doi.org/10.5281/zenodo.23688587"},
+  {t:"The Conquest in Castles", d:"How fast Norman castles spread across Britain after Hastings, decade by decade.", r:"norman-castles", img:"norman-castles/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/norman-castles/", data:"https://doi.org/10.5281/zenodo.23688584"},
+  {t:"From Saint to Wish", d:"3,440 holy and wishing wells in Britain and Ireland: their saints, languages, cures and offerings.", r:"holy-wells", img:"holy-wells/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/holy-wells/", data:"https://doi.org/10.5281/zenodo.23688019"},
+  {t:"Still Standing", d:"6,837 buildings from before AD 1100 on one map, and what kept them standing.", r:"oldest-buildings", img:"oldest-buildings/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/oldest-buildings/"},
+  {t:"There and Back Again", d:"43 great journeys from 600 BC to 1947, mapped and graded by the evidence that they happened.", r:"there-and-back-again", img:"there-and-back-again/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/there-and-back-again/"},
+  {t:"Same Shape, Different Millennia", d:"Every stone circle in Europe's open data, sorted into traditions and dated.", r:"stone-circles", img:"stone-circles/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/stone-circles/"},
+  {t:"Is the Barrow a European Thing?", d:"99,049 burial mounds from Ireland to the steppe, with radiocarbon dates.", r:"barrows-of-europe", img:"barrows-of-europe/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/barrows-of-europe/"},
+  {t:"The Megalith Highway", d:"13,280 megalithic monuments: did the idea of the great stone tomb travel by sea?", r:"megalith-highway", img:"megalith-highway/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/megalith-highway/"},
+  {t:"What Became of the Abbeys?", d:"808 houses Henry VIII closed, traced to what stands on their sites today.", r:"after-the-abbeys", img:"after-the-abbeys/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/after-the-abbeys/", data:"https://doi.org/10.5281/zenodo.23677173"},
+  {t:"Whose Church Is It?", d:"279,212 churches in twelve Western European countries, sorted by patron saint.", r:"saints-and-wells", img:"saints-and-wells/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/saints-and-wells/", data:"https://doi.org/10.5281/zenodo.23677171"},
+  {t:"Where Was the Battle?", d:"88 proposed sites for 18 lost battles of early Britain, scored against the texts.", r:"where-was-the-battle", img:"where-was-the-battle/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/where-was-the-battle/"},
+  {t:"Silver and Names", d:"Viking hoards against Norse place names: they mostly agree, except in Lincolnshire.", r:"viking-silver", img:"viking-silver/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/viking-silver/"},
+  {t:"Cold Years, Witch Years?", d:"Scotland's 3,840 accused witches: did the panics follow cold years? They did not.", r:"witch-hunts", img:"witch-hunts/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/witch-hunts/", data:"https://doi.org/10.5281/zenodo.23677167"},
+  {t:"The Villages That Vanished", d:"England's 2,222 deserted medieval villages against Domesday Book.", r:"lost-villages", img:"lost-villages/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/lost-villages/", data:"https://doi.org/10.5281/zenodo.23677161"},
+  {t:"Bloody Place Names", d:"756 grim names on the OS map against 507 battles: only the Battles mark battlefields.", r:"bloody-place-names", img:"bloody-place-names/header.png", blog:"https://blog.tristanhotham.com/2026/10/27/bloody-place-names/", data:"https://doi.org/10.5281/zenodo.23677165"},
+  {t:"Whose Ships Sank Where?", d:"106,550 shipwrecks in Europe's seas, 1744 to 1945, by the flag they sailed under.", r:"wrecks-of-europe", img:"wrecks-of-europe/header.png", blog:"https://blog.tristanhotham.com/2026/10/26/wrecks-of-europe/"},
+  {t:"Far From Home", d:"Where each Victoria Cross was won, where its recipient was born, and the distance between.", r:"victoria-cross", img:"victoria-cross/header.png", blog:"https://blog.tristanhotham.com/2026/10/26/victoria-cross/"},
   {t:"What Pub Names Remember", d:"Every named pub in Britain, grouped and mapped: Red Lions, Royal Oaks and the names that give a county away.", r:"pub-sign-history", img:"pub-sign-history/img/pubs_header.png", blog:"https://blog.tristanhotham.com/2026/10/26/what-pub-names-remember/", data:"https://doi.org/10.5281/zenodo.23676495"},
   {t:"The Geography of Saints", d:"17,116 church dedications mapped: Andrew in Scotland, David in Wales, and 98 saints found only in Cornwall.", r:"saints-geography", img:"saints-geography/img/saints_header.png", blog:"https://blog.tristanhotham.com/2026/10/26/the-geography-of-saints/", data:"https://doi.org/10.5281/zenodo.23676497"},
   {t:"Is There a Barrow in Barrow?", d:"Do places named from Old English beorg sit by burial mounds? 129 names against 6,100 scheduled barrows.", r:"barrow-in-barrow", img:"barrow-in-barrow/img/barrow_header.png", blog:"https://blog.tristanhotham.com/2026/10/26/is-there-a-barrow-in-barrow/", data:"https://doi.org/10.5281/zenodo.23676162"},
