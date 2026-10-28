@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Tristan Hotham · Independent researcher</title>
-<meta name="description" content="Dr Tristan Hotham, independent researcher. I turn public data into papers, interactive maps and games: political campaigns and platforms, archaeology, landscape and history.">
+<meta name="description" content="Dr Tristan Hotham, independent data-led researcher of politics, the past, platforms and places: interactive maps of Britain and the world, open papers on parties and platforms, and browser games.">
 <meta property="og:title" content="Tristan Hotham · Independent researcher">
-<meta property="og:description" content="Researcher of campaigns and platforms. Maker of other things. Papers, interactive data studies and browser games.">
+<meta property="og:description" content="Data-led researcher of politics, the past, platforms and places. Maker of maps, games and other things. Interactive data studies, papers and browser games.">
 <meta property="og:image" content="https://tristan-hotham.github.io/assets/share.png">
 <meta property="og:url" content="https://tristan-hotham.github.io/">
 <meta name="twitter:card" content="summary_large_image">
@@ -187,8 +187,8 @@ footer .fine{grid-column:1/-1;font:400 12px/1.5 var(--mono);color:color-mix(in s
       <div>
         <div class="kick"><b>Independent researcher</b><span>Data · maps · papers · games</span></div>
         <h1><span>Tristan</span><span class="r">Hotham</span></h1>
-        <p class="tag">Researcher of campaigns and platforms. Maker of other things.</p>
-        <p class="lede">I take public data, the messier the better, and turn it into papers, interactive maps and things you can play with. My PhD and most of my papers are about how political parties use Facebook. Lately I have pointed the same methods at hillforts, Roman roads, pub signs, saints, shipwrecks, witch trials and the Domesday Book.</p>
+        <p class="tag">Data-led researcher of politics, the past, platforms and places. Maker of maps, games and other things.</p>
+        <p class="lede">I take public data, the messier the better, and turn it into interactive maps, papers and things you can play with: hillforts, Roman roads, pub signs, sea levels and the weather, in Britain and around the world, and how political parties campaign on Facebook.</p>
         <div class="cta">
           <a class="p" href="#studies">See the data studies</a>
           <a href="#research">The research</a>
@@ -203,7 +203,7 @@ footer .fine{grid-column:1/-1;font:400 12px/1.5 var(--mono);color:color-mix(in s
     </div>
     <div class="stats">
       <div><b>PhD</b><span>Political parties on Facebook</span></div>
-      <div><b class="r" id="n-studies">70</b><span>Interactive data studies</span></div>
+      <div><b class="r">Maps</b><span>Interactive data studies of Britain and the world</span></div>
       <div><b class="bl">3</b><span>Free browser games</span></div>
       <div><b>Open</b><span>Every paper, dataset and line of code</span></div>
     </div>
@@ -369,7 +369,7 @@ const G = [
   {t:"Neon Protocol: Uprising", d:"Advance Wars battles with Command & Conquer base building in a neon megacity, 2187.", r:"neon-protocol", img:"neon-protocol/poster.jpg", blog:"https://blog.tristanhotham.com/2026/10/16/neon-protocol-uprising/"},
   {t:"Gallery Gaffer", d:"A pixel-art arcade game about the night shift at an art gallery. One HTML file.", r:"gallery-gaffer", img:"gallery-gaffer/poster.jpg"}
 ];
-document.getElementById("n-studies").textContent = S.length;
+
 const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 function card(p, type, cls) {
   const href = `https://tristan-hotham.github.io/${p.r}/`;
