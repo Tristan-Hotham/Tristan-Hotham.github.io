@@ -77,7 +77,7 @@
       '<a class="brand" href="https://tristanhotham.com/">' + LOGO + "Tristan Hotham</a>" +
       '<span class="crumb">/ <a style="color:inherit" href="' + HUB + '#studies">Data studies</a> / ' + esc(title) + "</span>" +
       "<nav>" +
-      '<a class="hi" href="' + HUB + '#studies">All ' + (n || "") + " data studies</a>" +
+      '<a class="hi" href="' + HUB + '#studies">All data studies</a>' +
       '<a href="https://tristanhotham.com/">Website</a>' +
       '<a href="https://blog.tristanhotham.com/">Blog</a>' +
       '<a href="https://tristanhotham.com/research/">Research</a>' +
@@ -111,7 +111,7 @@
       '<p class="k">Keep exploring</p><h2>You might also like</h2>' +
       '<p class="sub">More questions about the past, the landscape and the weather, answered with open data.</p>' +
       '<div class="grid">' + cards + "</div>" +
-      '<div class="links"><a class="p" href="' + HUB + '#studies">See all ' + cat.length + " data studies</a>" + mine +
+      '<div class="links"><a class="p" href="' + HUB + '#studies">See all data studies</a>' + mine +
       '<a href="https://blog.tristanhotham.com/">Blog</a><a href="https://tristanhotham.com/">tristanhotham.com</a></div>' +
       '<p class="fine">Dr Tristan Hotham, independent researcher. Researcher of campaigns and platforms. Maker of other things.</p>' +
       "</div></section>");
