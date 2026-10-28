@@ -50,7 +50,12 @@
     ".links a.p{background:#141313;color:#FAF8F4;border-color:#141313}",
     ".links a:hover{background:var(--red);border-color:var(--red);color:#FAF8F4}",
     ".fine{margin-top:18px;font:400 12.5px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--mut)}",
-    ".fine a{color:inherit}"
+    ".fine a{color:inherit}",
+    ".sg{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:30px;padding:20px 22px;background:var(--card);border:2px solid var(--line);box-shadow:6px 6px 0 #24477F}",
+    ".sg h3{font:800 21px/1.2 Georgia,'Times New Roman',serif;margin:0 0 4px}",
+    ".sg p{margin:0;color:var(--mut);font-size:15px;max-width:640px}",
+    ".sg a{font:600 13px/1 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:.06em;text-transform:uppercase;background:var(--red);color:#FAF8F4;text-decoration:none;border:2px solid var(--red);padding:12px 18px;white-space:nowrap}",
+    ".sg a:hover,.sg a:focus-visible{background:#141313;border-color:#141313;outline:none}"
   ].join("\n");
 
   var LOGO = '<img src="' + HUB + 'assets/logo.svg" alt="" width="26" height="26">';
@@ -113,6 +118,8 @@
       '<div class="grid">' + cards + "</div>" +
       '<div class="links"><a class="p" href="' + DATA + '">See all data stories</a>' + mine +
       '<a href="https://blog.tristanhotham.com/">Blog</a><a href="https://tristanhotham.com/">tristanhotham.com</a></div>' +
+      '<div class="sg"><div><h3>Get new data stories by email</h3><p>New maps and write-ups on politics, the past, platforms and places, sent when they\'re published. No spam, unsubscribe any time.</p></div>' +
+      '<a href="https://blog.tristanhotham.com/subscribe/">Subscribe</a></div>' +
       '<p class="fine">Dr Tristan Hotham, independent researcher. Data-led researcher of politics, the past, platforms and places. Maker of maps, games and other things.</p>' +
       "</div></section>");
   }
