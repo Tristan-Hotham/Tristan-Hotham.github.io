@@ -57,7 +57,14 @@
     ".sg h3{font:800 21px/1.2 Georgia,'Times New Roman',serif;margin:0 0 4px}",
     ".sg p{margin:0;color:var(--mut);font-size:15px;max-width:640px}",
     ".sg a{font:600 13px/1 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:.06em;text-transform:uppercase;background:var(--red);color:#FAF8F4;text-decoration:none;border:2px solid var(--red);padding:12px 18px;white-space:nowrap}",
-    ".sg a:hover,.sg a:focus-visible{background:#141313;border-color:#141313;outline:none}"
+    ".sg a:hover,.sg a:focus-visible{background:#141313;border-color:#141313;outline:none}",
+    /* story and data links under the bar, shown only when the page itself lacks them */
+    ".ln{--bg:#F4EFE6;--fg:#141313;--red:#B3261E;background:var(--bg);color:var(--fg);border-bottom:2px solid var(--fg);font:600 12px/1 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;max-width:100%;overflow:hidden}",
+    "@media(prefers-color-scheme:dark){.ln{--bg:#1B1A19;--fg:#F1EEE8}}",
+    ".ln .li{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:7px max(14px,env(safe-area-inset-left))}",
+    ".ln a{color:var(--fg);text-decoration:none;border:2px solid var(--fg);padding:7px 10px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}",
+    ".ln a:hover,.ln a:focus-visible{background:var(--red);border-color:var(--red);color:#FAF8F4;outline:none}",
+    "@media(max-width:420px){.ln .li{padding:6px 10px;gap:6px}.ln a{padding:6px 8px;font-size:11.5px}}"
   ].join("\n");
 
   var LOGO = '<img src="' + HUB + 'assets/logo.svg" alt="" width="26" height="26">';
@@ -77,6 +84,24 @@
     return host;
   }
 
+  // Does the page itself (not our injected blocks) already link somewhere matching test(href)?
+  function pageLinks(test) {
+    var a = document.querySelectorAll("a[href]");
+    for (var i = 0; i < a.length; i++) {
+      if (a[i].closest && a[i].closest(".th-site-nav")) continue;
+      if (test(a[i].href || a[i].getAttribute("href") || "")) return true;
+    }
+    return false;
+  }
+  function norm(u) { return String(u || "").toLowerCase().replace(/^https?:\/\/(www\.)?/, "").replace(/[?#].*$/, "").replace(/\/+$/, ""); }
+  function storyLinks(me) {
+    if (!me) return "";
+    var out = [];
+    if (me.blog) { var b = norm(me.blog); if (!pageLinks(function (h) { return norm(h) === b; })) out.push('<a href="' + esc(me.blog) + '">Read the story</a>'); }
+    if (me.data && !pageLinks(function (h) { return /doi\.org|zenodo/i.test(h); })) out.push('<a href="' + esc(me.data) + '">Data and paper</a>');
+    return out.length ? '<div class="ln" role="navigation" aria-label="This study"><div class="li">' + out.join("") + "</div></div>" : "";
+  }
+
   function topBar(me, n) {
     var title = me ? me.t : document.title;
     mount("top",
@@ -88,7 +113,7 @@
       '<a href="https://tristanhotham.com/">Website</a>' +
       '<a href="https://blog.tristanhotham.com/">Blog</a>' +
       '<a href="https://tristanhotham.com/research/">Research</a>' +
-      "</nav></div></div>");
+      "</nav></div></div>" + storyLinks(me));
   }
 
   // Related studies: three from the same theme, one from elsewhere; shuffled so repeat visits show different ones.
