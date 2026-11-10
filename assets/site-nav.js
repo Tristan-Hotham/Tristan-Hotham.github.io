@@ -1,7 +1,8 @@
 /* Shared navigation for Tristan Hotham's data studies on GitHub Pages.
    Adds a slim top bar (all studies, website, blog, research) and a "keep exploring" block of related studies
    at the foot of the page. One file, loaded by every study page:
-   <script src="https://tristan-hotham.github.io/assets/site-nav.js" defer></script>
+   <script src="https://maps.tristanhotham.com/assets/site-nav.js" defer></script>
+   Also fills in page metadata (canonical, title, Dataset JSON-LD, share image) and a "Jump to the map" button on long pages.
    Drawn inside a shadow root so it never clashes with a page's own styles. */
 (function () {
   "use strict";
@@ -15,7 +16,7 @@
   var CSS = [
     ":host{all:initial;display:block}",
     "*{box-sizing:border-box}",
-    ".bar{--bg:#141313;--fg:#FAF8F4;--mut:#B9B3A8;--red:#B3261E;--blue:#3B6BB5;font:500 13px/1 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--fg);border-bottom:3px solid var(--red)}",
+    ".bar{overflow:hidden;max-width:100%;--bg:#141313;--fg:#FAF8F4;--mut:#B9B3A8;--red:#B3261E;--blue:#3B6BB5;font:500 13px/1 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--fg);border-bottom:3px solid var(--red)}",
     ".in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:8px max(14px,env(safe-area-inset-left));min-height:44px;flex-wrap:wrap}",
     ".brand{display:flex;align-items:center;gap:8px;color:var(--fg);text-decoration:none;font-weight:700;letter-spacing:.02em;white-space:nowrap}",
     ".brand img{width:26px;height:26px;display:block}",
@@ -26,6 +27,7 @@
     "nav a.hi{background:var(--red)}",
     "nav a.hi:hover{background:#8C1D16}",
     "@media(max-width:700px){.crumb{display:none}.in{gap:8px}nav{width:100%;margin-left:0;justify-content:flex-start}nav a{padding:6px 7px;font-size:12.5px}}",
+    "@media(max-width:420px){.in{gap:6px;padding:6px 10px}nav{gap:2px}nav a{padding:6px 5px;font-size:12px}}",
     /* footer block */
     ".more{--bg:#F4EFE6;--card:#FAF8F4;--fg:#141313;--mut:#5E5A54;--line:#141313;--red:#B3261E;font:400 16px/1.5 Georgia,'Times New Roman',serif;background:var(--bg);color:var(--fg);border-top:3px solid var(--red);margin-top:48px}",
     "@media(prefers-color-scheme:dark){.more{--bg:#1B1A19;--card:#242322;--fg:#F1EEE8;--mut:#B3ADA4;--line:#F1EEE8}}",
@@ -124,16 +126,59 @@
       "</div></section>");
   }
 
+
+  // Page metadata: canonical, title, share image and schema.org Dataset, from the catalogue entry.
+  function meta(me) {
+    var head = document.head; if (!head || !here) return;
+    var url = HUB + here + "/";
+    var add = function (tag, attrs) { var el = document.createElement(tag); for (var k in attrs) el.setAttribute(k, attrs[k]); head.appendChild(el); return el; };
+    var can = head.querySelector('link[rel="canonical"]');
+    if (!can) add("link", { rel: "canonical", href: url });
+    else if (/github\.io/i.test(can.getAttribute("href") || "")) can.setAttribute("href", url);
+    var ogu = head.querySelector('meta[property="og:url"]');
+    if (ogu && /github\.io/i.test(ogu.getAttribute("content") || "")) ogu.setAttribute("content", url);
+    if (!/Hotham/i.test(document.title)) document.title = (document.title || (me && me.t) || "Data story") + " | Dr Tristan Hotham";
+    if (!me) return;
+    var img = me.img ? (/^https?:/.test(me.img) ? me.img : HUB + me.img) : "";
+    if (img && !head.querySelector('meta[property="og:image"]')) add("meta", { property: "og:image", content: img });
+    if (!head.querySelector('meta[name="twitter:card"]')) add("meta", { name: "twitter:card", content: img ? "summary_large_image" : "summary" });
+    if (!head.querySelector('script[type="application/ld+json"][data-th]')) {
+      var ds = { "@context": "https://schema.org", "@type": "Dataset", name: me.t, description: me.d, url: url,
+        creator: { "@type": "Person", name: "Tristan Hotham", url: "https://tristanhotham.com/" }, isAccessibleForFree: true };
+      if (img) ds.image = img;
+      if (me.data) { ds.sameAs = me.data; var m = /10\.\d{4,9}\/[^\s?#]+/.exec(me.data); if (m) ds.identifier = "https://doi.org/" + m[0]; }
+      if (me.lic) ds.license = me.lic;
+      var sc = add("script", { type: "application/ld+json", "data-th": "1" }); sc.textContent = JSON.stringify(ds);
+    }
+  }
+
+  // Article-first pages: if the map starts more than a screen down, offer a small fixed jump button.
+  function jump() {
+    var map = document.querySelector(".maplibregl-map,.leaflet-container"); if (!map) return;
+    var top = function () { return map.getBoundingClientRect().top + window.scrollY; };
+    if (top() < window.innerHeight) return;
+    var b = document.createElement("button"); b.type = "button"; b.textContent = "Jump to the map";
+    b.setAttribute("aria-label", "Jump to the map");
+    b.style.cssText = "position:fixed;right:14px;bottom:14px;z-index:9999;font:600 13px/1 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:.04em;background:#B3261E;color:#FAF8F4;border:2px solid #141313;box-shadow:4px 4px 0 #141313;padding:11px 14px;cursor:pointer";
+    b.onclick = function () { map.scrollIntoView({ behavior: "smooth", block: "start" }); };
+    document.body.appendChild(b);
+    var vis = function () { var r = map.getBoundingClientRect(); b.style.display = (r.top < window.innerHeight && r.bottom > 0) ? "none" : "block"; };
+    window.addEventListener("scroll", vis, { passive: true }); vis();
+  }
+
   function start() {
     var done = false;
     var fallback = setTimeout(function () { if (!done) { done = true; topBar(null, ""); } }, 4000);
     fetch(CAT, { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (cat) {
-      if (done) { footer(cat, cat.filter(function (s) { return s.r === here; })[0]); return; }
+      if (done) { var m0 = cat.filter(function (s) { return s.r === here; })[0]; try { meta(m0); } catch (e) {} footer(cat, m0); return; }
       done = true; clearTimeout(fallback);
       var me = cat.filter(function (s) { return s.r === here; })[0];
+      try { meta(me); } catch (e) {}
       topBar(me, cat.length);
       footer(cat, me);
-    }).catch(function () { if (!done) { done = true; clearTimeout(fallback); topBar(null, ""); } });
+    }).catch(function () { if (!done) { done = true; clearTimeout(fallback); topBar(null, ""); } try { meta(null); } catch (e) {} });
+    try { meta(null); } catch (e) {}
+    setTimeout(function () { try { jump(); } catch (e) {} }, 1500);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
 })();
