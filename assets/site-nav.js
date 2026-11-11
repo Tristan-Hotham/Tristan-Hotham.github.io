@@ -3,7 +3,7 @@
    <script src="https://maps.tristanhotham.com/assets/site-nav.js" defer></script>
    It adds the shared site header (the same black bar as tristanhotham.com and the blog), a breadcrumb strip,
    a "keep exploring" block of related studies and the shared footer. It also fills in page metadata (canonical,
-   title, Dataset JSON-LD, share image, favicon), a "Cite this" line when the study has a DOI, a "Jump to the map"
+   title, Dataset JSON-LD, share image, favicon), a "Cite this" line when the study has a DOI, the study's tags (each linking to the data stories page filtered by that tag), a "Jump to the map"
    button on long pages, a small loading note over each map, a foldable map key on phones, larger tap targets
    and fade edges on rows that scroll sideways.
    The header, strip and footer are drawn inside shadow roots so they never clash with a page's own styles;
@@ -114,6 +114,12 @@
     ".ct .cb{display:flex;flex-wrap:wrap;gap:8px}",
     ".ct button,.ct .cb a{display:inline-flex;align-items:center;min-height:44px;font:500 13px/1 " + SANS + ";letter-spacing:.08em;text-transform:uppercase;color:var(--fg);background:transparent;text-decoration:none;border:2px solid var(--line);padding:0 12px;cursor:pointer;white-space:nowrap}",
     ".ct button:hover,.ct button:focus-visible,.ct .cb a:hover,.ct .cb a:focus-visible{background:#B3261E;border-color:#B3261E;color:#FFFFFF;outline:none}",
+    /* this study's tags, each linking to the data stories page filtered to that tag */
+    ".tg{margin:0 0 28px;max-width:100%}",
+    ".tg ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}",
+    ".tg li{margin:0;padding:0;min-width:0;max-width:100%}",
+    ".tg a{display:inline-flex;align-items:center;min-height:44px;max-width:100%;padding:0 12px;font:500 13px/1.2 " + MONO + ";color:var(--fg);background:var(--card);text-decoration:none;border:1.5px solid var(--line);border-radius:999px;overflow-wrap:anywhere}",
+    ".tg a:hover,.tg a:focus-visible{background:#B3261E;border-color:#B3261E;color:#FFFFFF;outline:none}",
     /* shared footer */
     ".ft{background:#141313;color:#E9E5DE;border-top:3px solid #B3261E;font:400 14px/1.5 " + SERIF + ";color-scheme:dark}",
     ".fi{max-width:1240px;margin:0 auto;padding:22px max(16px,env(safe-area-inset-left)) calc(24px + env(safe-area-inset-bottom));display:flex;flex-wrap:wrap;align-items:center;gap:6px 28px}",
@@ -322,6 +328,13 @@
       '<p class="cx">Hotham, T. (' + esc(me.year || "2026") + "). <i>" + esc(t) + (p === "." ? "</i>." : esc(p) + "</i>") + ' Zenodo. <a href="' + esc(doi) + '">' + esc(doi) + "</a></p>" +
       '<div class="cb"><button type="button" data-cite>Copy citation</button><a href="' + esc(zenodoUrl(me)) + '">Get the data</a></div></div>';
   }
+  function tagSlug(t) { return String(t).toLowerCase().replace(/\u2019/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
+  function tagsBlock(me) {
+    if (!me || !me.tags || !me.tags.length) return "";
+    return '<nav class="tg" aria-label="Tags for this study"><p class="k">Tags</p><ul>' + me.tags.map(function (t) {
+      return '<li><a href="' + DATA + "?tag=" + encodeURIComponent(tagSlug(t)) + '">' + esc(t) + "</a></li>";
+    }).join("") + "</ul></nav>";
+  }
   function wireCopy(host, me) {
     var root = host.shadowRoot || host, b = root.querySelector("[data-cite]"); if (!b) return;
     b.addEventListener("click", function () {
@@ -356,7 +369,7 @@
       '<a href="https://github.com/Tristan-Hotham/' + esc(here) + '">Code on GitHub</a>'
     ].join("") : "";
     var host = mount("bottom",
-      '<section class="more" aria-label="More data studies"><div class="mi">' + (me ? citeBlock(me) : "") +
+      '<section class="more" aria-label="More data studies"><div class="mi">' + (me ? citeBlock(me) + tagsBlock(me) : "") +
       '<p class="k">Keep exploring</p><h2>You might also like</h2>' +
       '<p class="sub2">More questions about the past, the landscape and the weather, answered with open data.</p>' +
       '<div class="grid">' + cards + "</div>" +
@@ -405,7 +418,9 @@
         includedInDataCatalog: { "@type": "DataCatalog", name: "Data studies by Dr Tristan Hotham", url: HUB + "catalogue/" } };
       if (me.ct) ds.alternateName = me.ct;
       if (img) ds.image = img;
-      if (me.kw && me.kw.length) ds.keywords = me.kw;
+      var kws = [].concat(me.kw || [], me.tags || []).filter(function (k, i, all) {
+        for (var j = 0; j < i; j++) if (String(all[j]).toLowerCase() === String(k).toLowerCase()) return false; return true; });
+      if (kws.length) ds.keywords = kws;
       if (me.year) ds.datePublished = String(me.year);
       if (me.theme) ds.about = me.theme;
       var dist = [], d0 = doiOf(me);
