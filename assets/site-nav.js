@@ -279,6 +279,33 @@
 
   function doiOf(me) { var m = me && /10\.\d{4,9}\/[^\s?#]+/.exec(me.data || ""); return m ? m[0] : ""; }
   function zenodoUrl(me) { var m = /zenodo\.(\d+)$/i.exec(doiOf(me)); return m ? "https://zenodo.org/records/" + m[1] : (me && me.data) || ""; }
+  // Always-latest DOIs: a study page may still name an older Zenodo version of its own record ("Read the paper",
+  // "Data and code", "Cite as"). The catalogue lists that study's version ids in "v"; links and visible text that
+  // name one of them are pointed at the concept DOI in "data", which always resolves to the latest version.
+  // Only ids in this study's own "v" list are touched, so DOIs of other works cited on the page stay as they are.
+  // File download links (zenodo.org/records/N/files/...) are left alone so they keep fetching the exact file.
+  function latestDois(me) {
+    var doi = doiOf(me), v = (me && me.v) || [];
+    if (!doi || !v.length || !/^10\.5281\/zenodo\.\d+$/i.test(doi)) return;
+    var ids = v.map(String).join("|"), concept = "https://doi.org/" + doi;
+    var hrefRe = new RegExp("^https?:\\/\\/(?:(?:dx\\.)?doi\\.org\\/|(?:www\\.)?zenodo\\.org\\/doi\\/)10\\.5281\\/zenodo\\.(?:" + ids + ")\\/?(?:[?#].*)?$|^https?:\\/\\/(?:www\\.)?zenodo\\.org\\/records?\\/(?:" + ids + ")\\/?(?:[?#].*)?$", "i");
+    var txtRe = new RegExp("((?:https?:\\/\\/)?(?:(?:dx\\.)?doi\\.org\\/|(?:www\\.)?zenodo\\.org\\/doi\\/)?)10\\.5281\\/zenodo\\.(?:" + ids + ")(?!\\d)|https?:\\/\\/(?:www\\.)?zenodo\\.org\\/records?\\/(?:" + ids + ")(?![\\d\\/])", "gi");
+    var fix = function (s) {
+      return s.replace(txtRe, function (m, pre) { return pre === undefined ? concept : (pre ? concept : doi); });
+    };
+    var as = document.querySelectorAll("a[href]");
+    for (var i = 0; i < as.length; i++) {
+      var a = as[i]; if (a.closest(".th-site-nav")) continue;
+      var h = a.getAttribute("href") || "";
+      if (hrefRe.test(h)) a.setAttribute("href", concept);
+    }
+    var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), n, todo = [];
+    while ((n = w.nextNode())) {
+      var p = n.parentNode; if (!p || /^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA)$/.test(p.nodeName)) continue;
+      txtRe.lastIndex = 0; if (txtRe.test(n.nodeValue)) todo.push(n);
+    }
+    todo.forEach(function (t) { txtRe.lastIndex = 0; t.nodeValue = fix(t.nodeValue); });
+  }
   function citeTitle(me) { var t = String(me.ct || me.t || "").replace(/[.\s]+$/, ""); return /[?!]$/.test(t) ? t : t + "."; }
   function citeText(me) {
     return "Hotham, T. (" + (me.year || "2026") + "). " + citeTitle(me) + " Zenodo. https://doi.org/" + doiOf(me);
@@ -581,6 +608,7 @@
     else fetch(CAT, { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (cat) {
       var me = cat.filter(function (s) { return s.r === here; })[0];
       try { meta(me); } catch (e) {}
+      if (me && me.v) { try { latestDois(me); } catch (e) {} [800, 2500, 6000].forEach(function (t) { setTimeout(function () { try { latestDois(me); } catch (e) {} }, t); }); }
       if (!done) { done = true; clearTimeout(fallback); topBar(me); }
       footer(cat, me);
     }).catch(function () { if (!done) { done = true; clearTimeout(fallback); topBar(null); } footer(null, null); try { meta(null); } catch (e) {} });
