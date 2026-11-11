@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Static catalogue of every study (no JavaScript needed): https://maps.tristanhotham.com/catalogue/
+# Catalogue feeds: https://maps.tristanhotham.com/assets/studies.json and https://maps.tristanhotham.com/studies.csv
+# Summary for language models: https://maps.tristanhotham.com/llms.txt
+
 Sitemap: https://maps.tristanhotham.com/sitemap.xml
