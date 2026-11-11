@@ -2,13 +2,20 @@
    Adds a slim top bar (all studies, website, blog, research) and a "keep exploring" block of related studies
    at the foot of the page. One file, loaded by every study page:
    <script src="https://maps.tristanhotham.com/assets/site-nav.js" defer></script>
-   Also fills in page metadata (canonical, title, Dataset JSON-LD, share image) and a "Jump to the map" button on long pages.
+   Also fills in page metadata (canonical, title, Dataset JSON-LD, share image), a "Cite this" line with a copy button
+   when the study has a DOI, and a "Jump to the map" button on long pages.
+   A script-free list of every study lives at /catalogue/, with /studies.csv, /assets/studies.json and /llms.txt.
    Drawn inside a shadow root so it never clashes with a page's own styles. */
 (function () {
   "use strict";
   if (window.__thNav) return; window.__thNav = true;
   var HUB = "https://maps.tristanhotham.com/"; var DATA = "https://tristanhotham.com/data/";
   var CAT = HUB + "assets/studies.json";
+  var ORCID = "https://orcid.org/0000-0003-4931-9349";
+  var LIC = { "CC-BY-4.0": "https://creativecommons.org/licenses/by/4.0/", "CC-BY-SA-4.0": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "CC-BY-NC-4.0": "https://creativecommons.org/licenses/by-nc/4.0/", "CC-BY-NC-SA-4.0": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "CC-BY-NC-ND-4.0": "https://creativecommons.org/licenses/by-nc-nd/4.0/", "CC0-1.0": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "ODbL-1.0": "https://opendatacommons.org/licenses/odbl/1-0/" };
   var here = (location.pathname.split("/")[1] || "").toLowerCase();
   var isHub = (location.hostname === "tristan-hotham.github.io" || location.hostname === "maps.tristanhotham.com") && !here;
   if (isHub) return;
@@ -64,7 +71,15 @@
     ".ln .li{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:7px max(14px,env(safe-area-inset-left))}",
     ".ln a{color:var(--fg);text-decoration:none;border:2px solid var(--fg);padding:7px 10px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}",
     ".ln a:hover,.ln a:focus-visible{background:var(--red);border-color:var(--red);color:#FAF8F4;outline:none}",
-    "@media(max-width:420px){.ln .li{padding:6px 10px;gap:6px}.ln a{padding:6px 8px;font-size:11.5px}}"
+    "@media(max-width:420px){.ln .li{padding:6px 10px;gap:6px}.ln a{padding:6px 8px;font-size:11.5px}}",
+    /* cite this: compact citation with copy button, shown when the catalogue has a DOI and the page has no citation of its own */
+    ".ct{margin:0 0 28px;padding:14px 16px;background:var(--card);border:2px solid var(--line);border-left:8px solid var(--red);max-width:100%;overflow:hidden}",
+    ".ct .ck{font:600 11px/1 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin:0 0 8px}",
+    ".ct .cx{margin:0 0 10px;font-size:15px;line-height:1.5;overflow-wrap:anywhere;word-break:break-word}",
+    ".ct .cx a{color:inherit}",
+    ".ct .cb{display:flex;flex-wrap:wrap;gap:8px}",
+    ".ct button,.ct .cb a{font:600 12px/1 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--fg);background:transparent;text-decoration:none;border:2px solid var(--line);padding:8px 11px;cursor:pointer;white-space:nowrap}",
+    ".ct button:hover,.ct button:focus-visible,.ct .cb a:hover,.ct .cb a:focus-visible{background:var(--red);border-color:var(--red);color:#FAF8F4;outline:none}"
   ].join("\n");
 
   var LOGO = '<img src="' + HUB + 'assets/logo.svg" alt="" width="26" height="26">';
@@ -125,6 +140,36 @@
     return same.slice(0, 3).concat(diff).slice(0, 4);
   }
 
+  function doiOf(me) { var m = me && /10\.\d{4,9}\/[^\s?#]+/.exec(me.data || ""); return m ? m[0] : ""; }
+  function zenodoUrl(me) { var m = /zenodo\.(\d+)$/i.exec(doiOf(me)); return m ? "https://zenodo.org/records/" + m[1] : (me && me.data) || ""; }
+  function citeTitle(me) { var t = String(me.ct || me.t || "").replace(/[.\s]+$/, ""); return /[?!]$/.test(t) ? t : t + "."; }
+  function citeText(me) {
+    return "Hotham, T. (" + (me.year || "2026") + "). " + citeTitle(me) + " Zenodo. https://doi.org/" + doiOf(me);
+  }
+  // Does the page already carry a citation of its own?
+  function pageCites() {
+    var txt = ""; try { txt = document.body.innerText || ""; } catch (e) {}
+    return /Hotham,\s*T\.?\s*\(\d{4}\)/.test(txt) || /\b(how to cite|cite this|suggested citation)\b/i.test(txt);
+  }
+  function citeBlock(me) {
+    if (!doiOf(me) || pageCites()) return "";
+    var doi = "https://doi.org/" + doiOf(me), t = citeTitle(me), p = t.slice(-1); t = t.slice(0, -1);
+    return '<div class="ct" role="note" aria-label="Cite this study"><p class="ck">Cite this</p>' +
+      '<p class="cx">Hotham, T. (' + esc(me.year || "2026") + "). <i>" + esc(t) + (p === "." ? "</i>." : esc(p) + "</i>") + ' Zenodo. <a href="' + esc(doi) + '">' + esc(doi) + "</a></p>" +
+      '<div class="cb"><button type="button" data-cite>Copy citation</button><a href="' + esc(zenodoUrl(me)) + '">Get the data</a></div></div>';
+  }
+  function wireCopy(host, me) {
+    var root = host.shadowRoot || host, b = root.querySelector("[data-cite]"); if (!b) return;
+    b.addEventListener("click", function () {
+      var txt = citeText(me), ok = function () { b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy citation"; }, 2000); };
+      var fall = function () {
+        var ta = document.createElement("textarea"); ta.value = txt; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;left:-9999px;top:0";
+        document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); ok(); } catch (e) {} document.body.removeChild(ta);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok, fall); else fall();
+    });
+  }
+
   function footer(cat, me) {
     var list = pick(cat, me);
     var cards = list.map(function (s) {
@@ -138,17 +183,21 @@
       me.data ? '<a href="' + esc(me.data) + '">Data and paper</a>' : "",
       '<a href="https://github.com/Tristan-Hotham/' + esc(here) + '">Code on GitHub</a>'
     ].join("") : "";
-    mount("bottom",
-      '<section class="more" aria-label="More data studies"><div class="mi">' +
+    var host = mount("bottom",
+      '<section class="more" aria-label="More data studies"><div class="mi">' + (me ? citeBlock(me) : "") +
       '<p class="k">Keep exploring</p><h2>You might also like</h2>' +
       '<p class="sub">More questions about the past, the landscape and the weather, answered with open data.</p>' +
       '<div class="grid">' + cards + "</div>" +
       '<div class="links"><a class="p" href="' + DATA + '">See all data stories</a>' + mine +
+      '<a href="' + HUB + 'catalogue/">Catalogue</a>' +
+      '<a href="' + HUB + 'corrections/">Corrections</a>' +
       '<a href="https://blog.tristanhotham.com/">Blog</a><a href="https://tristanhotham.com/">tristanhotham.com</a></div>' +
       '<div class="sg"><div><h3>Get new data stories by email</h3><p>New maps and write-ups on politics, the past, platforms and places, sent when they\'re published. No spam, unsubscribe any time.</p></div>' +
       '<a href="https://blog.tristanhotham.com/subscribe/">Subscribe</a></div>' +
-      '<p class="fine">Dr Tristan Hotham, independent researcher. Data-led researcher of politics, the past, platforms and places. Maker of maps, games and other things.</p>' +
+      '<p class="fine">Dr Tristan Hotham, independent researcher. Data-led researcher of politics, the past, platforms and places. Maker of maps, games and other things. ' +
+      'Every study in plain form: <a href="' + HUB + 'catalogue/">catalogue</a>, <a href="' + HUB + 'studies.csv">CSV</a>, <a href="' + CAT + '">JSON</a>.</p>' +
       "</div></section>");
+    if (me) wireCopy(host, me);
   }
 
 
@@ -169,10 +218,22 @@
     if (!head.querySelector('meta[name="twitter:card"]')) add("meta", { name: "twitter:card", content: img ? "summary_large_image" : "summary" });
     if (!head.querySelector('script[type="application/ld+json"][data-th]')) {
       var ds = { "@context": "https://schema.org", "@type": "Dataset", name: me.t, description: me.d, url: url,
-        creator: { "@type": "Person", name: "Tristan Hotham", url: "https://tristanhotham.com/" }, isAccessibleForFree: true };
+        creator: { "@type": "Person", "@id": ORCID, name: "Tristan Hotham", url: "https://tristanhotham.com/", sameAs: [ORCID] }, isAccessibleForFree: true,
+        includedInDataCatalog: { "@type": "DataCatalog", name: "Data studies by Dr Tristan Hotham", url: HUB + "catalogue/" } };
+      if (me.ct) ds.alternateName = me.ct;
       if (img) ds.image = img;
-      if (me.data) { ds.sameAs = me.data; var m = /10\.\d{4,9}\/[^\s?#]+/.exec(me.data); if (m) ds.identifier = "https://doi.org/" + m[0]; }
-      if (me.lic) ds.license = me.lic;
+      if (me.kw && me.kw.length) ds.keywords = me.kw;
+      if (me.year) ds.datePublished = String(me.year);
+      if (me.theme) ds.about = me.theme;
+      var dist = [], d0 = doiOf(me);
+      if (d0) {
+        ds.identifier = "https://doi.org/" + d0; ds.sameAs = ds.identifier; ds.citation = citeText(me);
+        dist.push({ "@type": "DataDownload", name: "Data and paper on Zenodo", contentUrl: zenodoUrl(me), encodingFormat: "text/html" });
+      } else if (me.data) ds.sameAs = me.data;
+      dist.push({ "@type": "DataDownload", name: "Code and data on GitHub", contentUrl: "https://github.com/Tristan-Hotham/" + here, encodingFormat: "text/html" });
+      ds.distribution = dist;
+      if (me.blog) ds.subjectOf = { "@type": "BlogPosting", url: me.blog };
+      if (me.lic) ds.license = LIC[me.lic] || me.lic;
       var sc = add("script", { type: "application/ld+json", "data-th": "1" }); sc.textContent = JSON.stringify(ds);
     }
   }
